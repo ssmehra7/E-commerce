@@ -14,6 +14,9 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
+import { AlertModal } from "@/components/modals/alert-modal";
+import { ApiAlert } from "@/components/ui/api-alert";
+import { useOrigin } from "@/hooks/use-origin";
 
 interface SettingFormProps{
     initialData: Store;
@@ -27,11 +30,13 @@ export const SettingsForm: React.FC<SettingFormProps> =  ({ initialData }) => {
 
    
 
-
+    
     const [open,setOpen] = useState(false);
     const [loading,setLoading] = useState(false);
     const params = useParams();
     const router  = useRouter();
+
+    const origin = useOrigin();
     
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -56,20 +61,33 @@ export const SettingsForm: React.FC<SettingFormProps> =  ({ initialData }) => {
 
     async function handleDeleteStore(){
         try {
+            setLoading(true);
             const response = await axios.delete(`/api/stores/${params.storeId}`);
             router.refresh();
-            router.push('/');
+            router.push('/')
+
             toast.success("Store successfully deleted");
         } catch (error) {
             toast.error("Something went wrong in deletion");
+            // setLoading(false);
+        }finally{
+            setLoading(false);
+            setOpen(false);
         }
     }
 
     return (
         <>
+            <AlertModal
+                isOpen={open}
+                onClose={()=>{setOpen(false)}}
+                onConfirm={handleDeleteStore}
+                loading={loading}
+            
+            />
             <div className="flex items-center justify-between">
                 <Heading title="Settings" description="Manage store preferences" />
-                <Button variant="destructive" size="icon" onClick={handleDeleteStore}>
+                <Button variant="destructive" size="icon" onClick={()=>{setOpen(true)}}>
                     <Trash className="h-4 w-4" />
                 </Button>
             </div>
@@ -86,7 +104,7 @@ export const SettingsForm: React.FC<SettingFormProps> =  ({ initialData }) => {
                             <FormItem>
                                 <FormLabel>Storename</FormLabel>
                                 <FormControl>
-                                    <Input placeholder="Storename" {...field} />
+                                    <Input disabled={loading} placeholder="Storename" {...field} />
                                 </FormControl>
                                 <FormDescription>
                                     Update Your Store Name
@@ -95,10 +113,11 @@ export const SettingsForm: React.FC<SettingFormProps> =  ({ initialData }) => {
                             </FormItem>
                         )}
                     />
-                    <Button type="submit">Save Changes</Button>
+                    <Button disabled={loading} type="submit">Save Changes</Button>
                 </form>
                 </div>
             </Form>
+            <ApiAlert title="NEXT_PUBLIC_API_URL" description={`${origin}/api/${params.storeId}`}variant="public"/>
         </>
     );
 }

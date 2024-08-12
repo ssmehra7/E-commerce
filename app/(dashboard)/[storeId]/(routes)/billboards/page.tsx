@@ -1,0 +1,47 @@
+
+import {format} from "date-fns";
+import { Separator } from "@/components/ui/separator";
+import { BillBoardClient } from "./components/client";
+import axios from "axios";
+import prisma from "@/lib/db";
+import { BillBoardColumn } from "./components/columns";
+// import { useParams, useRouter } from "next/navigation";
+
+
+
+
+
+const BillBoard = async ({params}:{params:{storeId:string}}) =>{
+    const billboards = await prisma.billboard.findMany({
+        where:{
+            storeId:params.storeId,
+        },
+        orderBy:{
+            createdAt:'desc'
+        }
+    });
+
+
+    const formattedBillBoards: BillBoardColumn[]= billboards.map((item)=>({
+        id:item.id,
+        label:item.label,
+        createdAt:format(item.createdAt,"MMMM do, yyyy"),
+
+    }));
+
+
+    return (
+       <>
+        <div className="flex-col">
+            <div className="flex-1 space-y-4 p-8 pt-6">
+                <BillBoardClient data ={formattedBillBoards}/>
+            </div>
+        </div>
+        
+       </>
+    )
+}
+
+
+
+export default BillBoard; 
