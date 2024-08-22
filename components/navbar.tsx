@@ -14,6 +14,7 @@ import { StoreSwitcher2 } from "./store-switcher2";
 
 
 import CreateStoreBtn from "./create-store";
+import { ModeToggle } from "./theme-toggle";
 
 
 
@@ -60,6 +61,7 @@ export default async function Navbar() {
             </div>
 
             <div className="flex items-center space-x-4">
+                <ModeToggle/>
                 <UserButton />
             </div>
         </div>
