@@ -1,7 +1,7 @@
 "use client"
 
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { BillBoardColumn } from "./columns"
+import { CategoryColumn } from "./columns"
 import { Button } from "@/components/ui/button"
 import { Copy, Edit, MoreHorizontal, Trash } from "lucide-react"
 import { DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu"
@@ -12,7 +12,7 @@ import axios from "axios"
 import { AlertModal } from "@/components/modals/alert-modal"
 
 interface CellActionProps {
-    data: BillBoardColumn,
+    data: CategoryColumn,
 }
 
 

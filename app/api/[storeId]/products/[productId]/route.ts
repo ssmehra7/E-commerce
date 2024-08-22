@@ -51,7 +51,7 @@ export async function PATCH(req: Request, { params }: { params: { storeId: strin
     const storeByUserId = await prisma.store.findFirst({
       where: {
         id: params.storeId,
-        userId
+        
       }
     });
 
